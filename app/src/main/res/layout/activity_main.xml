@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/light_grey"
+        >
+        <Button
+            style="@style/menuBtn"
+            android:onClick="loadDashboard"
+            android:text="@string/menuBtn_1" />
+        <Button
+            style="@style/menuBtn"
+            android:onClick="loadManageBudgets"
+            android:text="@string/menuBtn_2" />
+        <Button
+            style="@style/menuBtn"
+            android:onClick="loadHistory"
+            android:text="@string/menuBtn_3" />
+    </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/blue_800"
+        />
+
+    <LinearLayout
+        android:id="@+id/fragmentHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
+
+</LinearLayout>
