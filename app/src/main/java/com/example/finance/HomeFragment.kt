@@ -74,11 +74,11 @@ class HomeFragment : Fragment() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         budgetHolder.addView(currentPeriodHolder)
-        var obj = dm.selectAll()
+        var obj = dm.selectAllByCategory()
         var totalBudget = 0.0
         var totalBalance = 0.0
         var memory = ""
-        var flag = true
+        var flag = false
         while(obj.moveToNext()) {
             if(memory == "" || obj.getString(2).lowercase() != memory) {
                 memory = obj.getString(2).lowercase()

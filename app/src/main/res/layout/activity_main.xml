@@ -13,18 +13,30 @@
         android:orientation="horizontal"
         android:background="@color/light_grey"
         >
-        <Button
+        <com.google.android.material.button.MaterialButton
             style="@style/menuBtn"
             android:onClick="loadDashboard"
-            android:text="@string/menuBtn_1" />
+            app:icon="@android:drawable/ic_menu_search"
+            app:iconGravity="textEnd"
+            app:iconPadding="10dp"
+            app:iconTint="#efefef"
+            android:text="" />
         <Button
             style="@style/menuBtn"
             android:onClick="loadManageBudgets"
-            android:text="@string/menuBtn_2" />
+            app:icon="@android:drawable/ic_menu_search"
+            app:iconGravity="textEnd"
+            app:iconPadding="10dp"
+            app:iconTint="#efefef"
+            android:text="" />
         <Button
             style="@style/menuBtn"
             android:onClick="loadHistory"
-            android:text="@string/menuBtn_3" />
+            app:icon="@android:drawable/ic_menu_search"
+            app:iconGravity="textEnd"
+            app:iconPadding="10dp"
+            app:iconTint="#efefef"
+            android:text="" />
     </LinearLayout>
 
     <com.google.android.material.divider.MaterialDivider

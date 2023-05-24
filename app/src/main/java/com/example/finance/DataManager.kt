@@ -72,6 +72,9 @@ class DataManager(context: Context) {
     fun selectAll(): Cursor {
         return db.rawQuery("SELECT * from $TABLE_BUDGET", null)
     }
+    fun selectAllByCategory(): Cursor {
+        return db.rawQuery("SELECT * from $TABLE_BUDGET ORDER BY $TABLE_ROW_CATEGORY ASC", null)
+    }
 
     fun getLast(): Cursor {
         return db.rawQuery("SELECT * from $TABLE_BUDGET ORDER BY $TABLE_ROW_MONTH_ID DESC LIMIT 1;", null)

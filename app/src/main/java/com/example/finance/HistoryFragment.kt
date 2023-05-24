@@ -1,6 +1,7 @@
 package com.example.finance
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -9,6 +10,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,17 +59,25 @@ class HistoryFragment : Fragment() {
         obj.close()
         //dm.insert("Budget1",100.0,"personal", nextID)
         val historyHolder: LinearLayout = view.findViewById<LinearLayout>(R.id.historyHolder)
-        obj = dm.selectAll()
-        var memory = -1
-        var flag = true
+        obj = dm.selectAllByCategory()
+        var periodMemory = -1
+        var categoryMemory = ""
+        var periodFlag = false
+        var categoryFlag = false
+        var totalBudget = 0.0
+        var totalBalance = 0.0
         while(obj.moveToNext()) {
-            if(memory == -1 || obj.getInt(5) != memory) {
-                memory = obj.getInt(5)
-                flag = true
+            if(periodMemory == -1 || obj.getInt(5) != periodMemory) {
+                periodMemory = obj.getInt(5)
+                periodFlag = true
+            }
+            if(categoryMemory == "" || obj.getString(2).lowercase() != categoryMemory) {
+                categoryMemory = obj.getString(2).lowercase()
+                categoryFlag = true
             }
             val currentMonth = mm.searchID(obj.getInt(5))
             if(currentMonth.moveToLast()) {
-                if(flag) {
+                if(periodFlag) {
                     val calendar: Calendar = Calendar.getInstance()
                     val formatter = SimpleDateFormat("MMMM d, yyyy")
                     calendar.timeInMillis = currentMonth.getLong(1)
@@ -82,6 +97,20 @@ class HistoryFragment : Fragment() {
                     )
                     historyHolder.addView(periodHolder)
                 }
+                if(categoryFlag) {
+                    val categoryHolder = TextView(activity)
+                    categoryHolder.text = "Category: ${obj.getString(2)}"
+                    var styleResId = R.style.budget_name_layout
+                    var styledTextView = ContextThemeWrapper(requireContext(), styleResId)
+                    categoryHolder.setTextAppearance(styledTextView, styleResId)
+                    categoryHolder.layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    historyHolder.addView(categoryHolder)
+                }
+                totalBudget += obj.getDouble(3)
+                totalBalance += obj.getDouble(4)
                 val budgetNameHolder = TextView(activity)
                 budgetNameHolder.text = "Budget: ${obj.getString(1)}"
                 var styleResId = R.style.budget_name_layout
@@ -92,7 +121,7 @@ class HistoryFragment : Fragment() {
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 val budgetHolder = TextView(activity)
-                budgetHolder.text = "Current budget: $${obj.getString(3)}"
+                budgetHolder.text = "Final budget: $${obj.getString(3)}"
                 styleResId = R.style.budget_item_layout
                 styledTextView = ContextThemeWrapper(requireContext(), styleResId)
                 budgetHolder.setTextAppearance(styledTextView, styleResId)
@@ -101,7 +130,7 @@ class HistoryFragment : Fragment() {
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 val balanceHolder = TextView(activity)
-                balanceHolder.text = "Current balance: $${obj.getString(4)}"
+                balanceHolder.text = "Final balance: $${obj.getString(4)}"
                 styleResId = R.style.budget_item_layout
                 styledTextView = ContextThemeWrapper(requireContext(), styleResId)
                 balanceHolder.setTextAppearance(styledTextView, styleResId)
@@ -113,9 +142,50 @@ class HistoryFragment : Fragment() {
                 historyHolder.addView(budgetHolder)
                 historyHolder.addView(balanceHolder)
 
-                flag = false
+                periodFlag = false
+                categoryFlag = false
             }
         }
+        val pieChart = view.findViewById<PieChart>(R.id.pieChart)
+
+        val percentBudget = ((totalBudget) / (totalBudget + totalBalance) * 100).toFloat()
+        val percentBalance = ((totalBalance) / (totalBudget + totalBalance) * 100).toFloat()
+
+        // Create data entries for the chart
+        val entries = ArrayList<PieEntry>()
+        entries.add(PieEntry(percentBudget, "Percentage of budget"))
+        entries.add(PieEntry(percentBalance, "Percentage of balance"))
+
+        // Create a dataset with the entries
+        val dataSet = PieDataSet(entries, "Finances overview all time")
+        dataSet.colors = listOf(Color.GREEN, Color.RED)
+        dataSet.valueTextSize = 15f
+        dataSet.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                val decimalFormat = DecimalFormat("#.##")
+                val roundedNumber = decimalFormat.format(value)
+                return "$roundedNumber%"
+            }
+        }
+        dataSet.setValueTextColors(listOf(Color.BLACK, Color.WHITE))
+
+        // Create a pie data object with the dataset
+        val data = PieData(dataSet)
+
+        // Customize chart properties
+        pieChart.setUsePercentValues(true)
+        pieChart.description.isEnabled = false
+        pieChart.legend.isEnabled = true
+        pieChart.setDrawEntryLabels(false)
+        pieChart.setCenterTextColor(Color.BLACK)
+
+        pieChart.centerText = "Finances overview"
+
+        // Set the data to the chart
+        pieChart.data = data
+
+        // Refresh the chart
+        pieChart.invalidate()
         obj.close()
         // Inflate the layout for this fragment
         return view
