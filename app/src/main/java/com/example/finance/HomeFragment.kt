@@ -46,35 +46,29 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val budgetHolder: LinearLayout = view.findViewById<LinearLayout>(R.id.budgetHolder)
         val dm = DataManager(requireActivity())
         val mm = MonthManager(requireActivity())
-        val currentTime = System.currentTimeMillis()
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = currentTime
-        calendar.add(Calendar.MONTH, 1)
-        val nextTime: Long = calendar.getTimeInMillis()
         var last = mm.getLast()
         if(last.moveToLast()) {
-            if(last.getLong(2) < currentTime) {
-                mm.insert(currentTime, nextTime)
-            }
+            val newCalendar: Calendar = Calendar.getInstance()
+            val newFormatter = SimpleDateFormat("MMMM d, yyyy")
+            newCalendar.timeInMillis = last.getLong(2)
+            val endTime = newFormatter.format(newCalendar.time)
+            val currentPeriodHolder = TextView(activity)
+            currentPeriodHolder.text = "Current period until $endTime"
+            var styleResId = R.style.budget_center_layout
+            var styledTextView = ContextThemeWrapper(requireContext(), styleResId)
+            currentPeriodHolder.setTextAppearance(styledTextView, styleResId)
+            currentPeriodHolder.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            budgetHolder.addView(currentPeriodHolder)
         }
-        val newCalendar: Calendar = Calendar.getInstance()
-        val newFormatter = SimpleDateFormat("MMMM d, yyyy")
-        newCalendar.timeInMillis = last.getLong(2)
-        val endTime = newFormatter.format(newCalendar.time)
-        val budgetHolder: LinearLayout = view.findViewById<LinearLayout>(R.id.budgetHolder)
-        val currentPeriodHolder = TextView(activity)
-        currentPeriodHolder.text = "Current period until $endTime"
-        var styleResId = R.style.budget_center_layout
-        var styledTextView = ContextThemeWrapper(requireContext(), styleResId)
-        currentPeriodHolder.setTextAppearance(styledTextView, styleResId)
-        currentPeriodHolder.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        budgetHolder.addView(currentPeriodHolder)
+        last.close()
         var obj = dm.selectAllByCategory()
+        val currentTime = System.currentTimeMillis()
         var totalBudget = 0.0
         var totalBalance = 0.0
         var memory = ""
@@ -134,11 +128,13 @@ class HomeFragment : Fragment() {
                     flag = false
                 }
             }
+            possiblePeriod.close()
         }
+        obj.close()
         val pieChart = view.findViewById<PieChart>(R.id.pieChart)
 
-        val percentBudget = ((totalBudget) / (totalBudget + totalBalance) * 100).toFloat()
-        val percentBalance = ((totalBalance) / (totalBudget + totalBalance) * 100).toFloat()
+        val percentBudget = ((totalBudget - totalBalance) / (totalBudget) * 100).toFloat()
+        val percentBalance = ((totalBalance) / (totalBudget) * 100).toFloat()
 
         // Create data entries for the chart
         val entries = ArrayList<PieEntry>()
@@ -175,7 +171,6 @@ class HomeFragment : Fragment() {
 
         // Refresh the chart
         pieChart.invalidate()
-        obj.close()
         // Inflate the layout for this fragment
         return view
     }

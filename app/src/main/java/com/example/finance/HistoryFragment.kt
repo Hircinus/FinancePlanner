@@ -148,8 +148,8 @@ class HistoryFragment : Fragment() {
         }
         val pieChart = view.findViewById<PieChart>(R.id.pieChart)
 
-        val percentBudget = ((totalBudget) / (totalBudget + totalBalance) * 100).toFloat()
-        val percentBalance = ((totalBalance) / (totalBudget + totalBalance) * 100).toFloat()
+        val percentBudget = ((totalBudget - totalBalance) / (totalBudget) * 100).toFloat()
+        val percentBalance = ((totalBalance) / (totalBudget) * 100).toFloat()
 
         // Create data entries for the chart
         val entries = ArrayList<PieEntry>()

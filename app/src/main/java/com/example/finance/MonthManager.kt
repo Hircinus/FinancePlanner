@@ -5,7 +5,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
-import java.sql.Date
 
 class MonthManager(context: Context) {
     private val db: SQLiteDatabase
@@ -13,7 +12,21 @@ class MonthManager(context: Context) {
     init {
         val helper = CustomSQLiteOpenHelper(context)
         db = helper.writableDatabase
-        //helper.onCreate(db)
+        if(!isTableExists("month"))
+            helper.onCreate(db)
+    }
+
+    fun isTableExists(tableName: String): Boolean {
+        val query =
+            "select DISTINCT tbl_name from sqlite_master where tbl_name = '$tableName'"
+        db.rawQuery(query, null).use { cursor ->
+            if (cursor != null) {
+                if (cursor.getCount() > 0) {
+                    return true
+                }
+            }
+            return false
+        }
     }
 
     companion object {

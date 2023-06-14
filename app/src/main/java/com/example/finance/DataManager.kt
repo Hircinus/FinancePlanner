@@ -12,7 +12,21 @@ class DataManager(context: Context) {
     init {
         val helper = CustomSQLiteOpenHelper(context)
         db = helper.writableDatabase
-        //helper.onCreate(db)
+        if(!isTableExists("budget"))
+            helper.onCreate(db)
+    }
+
+    fun isTableExists(tableName: String): Boolean {
+        val query =
+            "select DISTINCT tbl_name from sqlite_master where tbl_name = '$tableName'"
+        db.rawQuery(query, null).use { cursor ->
+            if (cursor != null) {
+                if (cursor.getCount() > 0) {
+                    return true
+                }
+            }
+            return false
+        }
     }
 
     companion object {

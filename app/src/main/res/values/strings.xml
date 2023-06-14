@@ -10,6 +10,15 @@
 
     <!-- Home page -->
 
+    <!-- Hamburger menu -->
+    <string name="menu_settings">Settings</string>
+    <string name="menu_about">About</string>
+
+    <!-- Settings -->
+
+    <!-- About -->
+    <string name="about_blurb">This app is an app.</string>
+
     <!-- Manage balance -->
     <string name="add_balance_btn">Add to balance</string>
     <string name="remove_balance_btn">Remove from balance</string>

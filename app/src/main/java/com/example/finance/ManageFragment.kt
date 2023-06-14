@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -74,6 +76,19 @@ class ManageFragment : Fragment() {
                     if(obj.moveToLast() && obj.getDouble(2) > System.currentTimeMillis()) {
                         dm.insert(budgetName.text.toString(), budgetAmount.text.toString().toDouble(), budgetCategory.text.toString(), obj.getInt(0))
                         Toast.makeText(activity, "Budget successfully created", Toast.LENGTH_LONG).show();
+                    } else {
+                        val currentTime = System.currentTimeMillis()
+                        val calendar: Calendar = Calendar.getInstance()
+                        calendar.timeInMillis = currentTime
+                        calendar.add(Calendar.MONTH, 1)
+                        val nextTime: Long = calendar.getTimeInMillis()
+                        if(!obj.moveToLast()) {
+                            mm.insert(currentTime, nextTime)
+                        }
+                        obj.close()
+                        obj = mm.getLast()
+                        dm.insert(budgetName.text.toString(), budgetAmount.text.toString().toDouble(), budgetCategory.text.toString(), obj.getInt(0))
+                        Toast.makeText(activity, "Budget successfully created", Toast.LENGTH_LONG).show();
                     }
                 }
                 updateStuff.visibility = View.VISIBLE
@@ -81,6 +96,7 @@ class ManageFragment : Fragment() {
                 budgets.clearCheck()
                 budgets.removeAllViews()
                 items = checkBudgetOptions(dm, mm, budgets, items)
+                obj.close()
             }
         }
         deleteBudget.setOnClickListener {
@@ -239,6 +255,7 @@ class ManageFragment : Fragment() {
             }
         }
         budgetOptions.close()
+        currentMonth.close()
         return items
     }
 

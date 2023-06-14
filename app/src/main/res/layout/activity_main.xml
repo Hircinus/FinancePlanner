@@ -16,7 +16,7 @@
         <com.google.android.material.button.MaterialButton
             style="@style/menuBtn"
             android:onClick="loadDashboard"
-            app:icon="@android:drawable/ic_menu_search"
+            app:icon="@drawable/home"
             app:iconGravity="textEnd"
             app:iconPadding="10dp"
             app:iconTint="#efefef"
@@ -24,7 +24,7 @@
         <Button
             style="@style/menuBtn"
             android:onClick="loadManageBudgets"
-            app:icon="@android:drawable/ic_menu_search"
+            app:icon="@drawable/search"
             app:iconGravity="textEnd"
             app:iconPadding="10dp"
             app:iconTint="#efefef"
@@ -32,7 +32,7 @@
         <Button
             style="@style/menuBtn"
             android:onClick="loadHistory"
-            app:icon="@android:drawable/ic_menu_search"
+            app:icon="@drawable/open_book"
             app:iconGravity="textEnd"
             app:iconPadding="10dp"
             app:iconTint="#efefef"
