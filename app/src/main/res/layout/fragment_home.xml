@@ -17,6 +17,11 @@
                 android:id="@+id/pieChart"
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
+            <TableLayout
+                android:id="@+id/budgetsTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TableLayout>
         </LinearLayout>
     </ScrollView>
 

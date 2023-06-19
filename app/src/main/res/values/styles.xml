@@ -24,4 +24,18 @@
         <item name="android:textSize">15sp</item>
         <item name="android:layout_margin">5dp</item>
     </style>
+    <style name="settingsSwitch">
+        <!-- Customize the thumb color when the switch is in the checked state -->
+        <item name="colorControlActivated">@color/green_confirm</item>
+
+        <!-- Customize the thumb color when the switch is in the unchecked state -->
+        <item name="colorSwitchThumbNormal">@color/red_decline</item>
+
+        <!-- Customize the track color
+        <item name="colorSurface">@color/your_track_color</item>
+
+            Customize the track color when the switch is in the checked state
+        <item name="colorSecondary">@color/your_track_checked_color</item>-->
+    </style>
+
 </resources>

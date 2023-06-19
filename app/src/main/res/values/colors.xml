@@ -10,6 +10,7 @@
 
     <color name="blue_800">#1B1BB1</color>
     <color name="green_confirm">#4CAF50</color>
+    <color name="yellow_warning">#FFC107</color>
     <color name="red_decline">#F44336</color>
     <color name="light_grey">#ccc</color>
 </resources>

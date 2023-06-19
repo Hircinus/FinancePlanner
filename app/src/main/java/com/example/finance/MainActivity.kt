@@ -1,25 +1,26 @@
 package com.example.finance
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import androidx.appcompat.app.AppCompatActivity
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        var frag = supportFragmentManager
-            .findFragmentById(R.id.fragmentHolder)
-        if(frag == null) {
-            frag = HomeFragment()
+        var intent = intent
+        if(intent.getBooleanExtra("passed", false)) {
+            setContentView(R.layout.activity_main)
+            var frag = HomeFragment()
             supportFragmentManager.beginTransaction()
-                .add(R.id.fragmentHolder, frag)
+                .replace(R.id.fragmentHolder, frag)
                 .commit()
+        } else {
+            intent = Intent(this@MainActivity, splash::class.java)
+            startActivity(intent)
         }
     }
 
@@ -31,19 +32,27 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             R.id.settings -> {
-                var frag = SettingsFragment()
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentHolder, frag)
-                    .commit()
+                setContentView(R.layout.activity_main)
+                loadSettings()
             }
             R.id.about -> {
-                var frag = AboutFragment()
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentHolder, frag)
-                    .commit()
+                setContentView(R.layout.activity_main)
+                loadAbout()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+    fun loadSettings() {
+        var frag = SettingsFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolder, frag)
+            .commit()
+    }
+    fun loadAbout() {
+        var frag = AboutFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolder, frag)
+            .commit()
     }
     fun loadDashboard(v: View) {
         var frag = HomeFragment()

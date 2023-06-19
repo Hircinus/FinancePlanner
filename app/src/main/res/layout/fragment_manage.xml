@@ -18,61 +18,109 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/updateBudgetMenu">
-                <RadioGroup
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/budgetsHolder" />
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusedByDefault="true"
-                    android:inputType="numberDecimal"
-                    android:hint="How much to modify balance?"
-                    android:id="@+id/amountToAdd" />
+                    android:textSize="18sp"
+                    android:layout_marginLeft="5dp"
+                    android:text="Select budget to edit" />
+                <Spinner
+                    android:id="@+id/budgetsHolder"
+                    android:padding="5dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <Button
                         style="@style/menuBtn"
-                        android:id="@+id/addBalance"
-                        android:backgroundTint="@color/green_confirm"
-                        android:text="@string/add_balance_btn" />
+                        android:id="@+id/toggleBalance"
+                        android:backgroundTint="@color/yellow_warning"
+                        android:textColor="@color/black"
+                        android:text="@string/open_balance_container" />
                     <Button
                         style="@style/menuBtn"
-                        android:id="@+id/removeBalance"
-                        android:backgroundTint="@color/red_decline"
-                        android:text="@string/remove_balance_btn" />
+                        android:id="@+id/toggleBudget"
+                        android:backgroundTint="@color/yellow_warning"
+                        android:textColor="@color/black"
+                        android:text="@string/open_budget_container" />
                 </LinearLayout>
-                <EditText
+
+                <LinearLayout
+                    android:id="@+id/balanceContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusedByDefault="true"
-                    android:inputType="numberDecimal"
-                    android:hint="How much to modify budget?"
-                    android:id="@+id/amountBudget" />
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/amountToAdd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="How much to modify balance?"
+                        android:inputType="numberDecimal" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/addBalance"
+                            style="@style/menuBtn"
+                            android:backgroundTint="@color/green_confirm"
+                            android:text="@string/add_balance_btn" />
+
+                        <Button
+                            android:id="@+id/removeBalance"
+                            style="@style/menuBtn"
+                            android:backgroundTint="@color/red_decline"
+                            android:text="@string/remove_balance_btn" />
+                    </LinearLayout>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <Button
-                        style="@style/menuBtn"
-                        android:id="@+id/addBudget"
-                        android:backgroundTint="@color/green_confirm"
-                        android:text="@string/add_budget_btn" />
-                    <Button
-                        style="@style/menuBtn"
-                        android:id="@+id/removeBudget"
-                        android:backgroundTint="@color/red_decline"
-                        android:text="@string/remove_budget_btn" />
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical"
+                    android:id="@+id/budgetContainer">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:hint="How much to modify budget?"
+                        android:id="@+id/amountBudget" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/addBudget"
+                            style="@style/menuBtn"
+                            android:backgroundTint="@color/green_confirm"
+                            android:text="@string/add_budget_btn" />
+
+                        <Button
+                            android:id="@+id/removeBudget"
+                            style="@style/menuBtn"
+                            android:backgroundTint="@color/red_decline"
+                            android:text="@string/remove_budget_btn" />
+                    </LinearLayout>
                 </LinearLayout>
                 <Button
                     style="@style/menuBtn"
+                    android:layout_width="match_parent"
                     android:id="@+id/deleteBudget"
                     android:backgroundTint="@color/red_decline"
                     android:text="@string/delete_budget_btn" />
                 <Button
                     style="@style/menuBtn"
+                    android:layout_width="match_parent"
                     android:id="@+id/createBudget"
                     android:backgroundTint="@color/green_confirm"
                     android:text="@string/create_budget_btn" />
@@ -82,18 +130,34 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/createBudgetMenu">
+                <Button
+                    style="@style/menuBtn"
+                    android:layout_width="match_parent"
+                    android:id="@+id/goBackBtn"
+                    android:text="Go back" />
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:hint="Budget name"
                     android:id="@+id/budgetName" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="5dp"
+                    android:text="Select Category" />
+                <Spinner
+                    android:id="@+id/budget_category_picker"
+                    android:padding="5dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:hint="Budget category"
-                    android:id="@+id/budgetCategory" />
+                    android:hint="New category name (optional)"
+                    android:id="@+id/categoryName" />
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,13 +166,10 @@
                     android:id="@+id/budgetAmount" />
                 <Button
                     style="@style/menuBtn"
+                    android:layout_width="match_parent"
                     android:id="@+id/createBudgetBtn"
                     android:backgroundTint="@color/green_confirm"
                     android:text="Create budget" />
-                <Button
-                    style="@style/menuBtn"
-                    android:id="@+id/goBackBtn"
-                    android:text="Go back" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

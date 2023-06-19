@@ -1,12 +1,16 @@
 package com.example.finance
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TableRow.LayoutParams
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.PieChart
@@ -17,6 +21,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,7 +51,9 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-        val budgetHolder: LinearLayout = view.findViewById<LinearLayout>(R.id.budgetHolder)
+        // budgetHolder not in use for the now
+        //val budgetHolder: LinearLayout = view.findViewById<LinearLayout>(R.id.budgetHolder)
+        val tableLayout: TableLayout = view.findViewById(R.id.budgetsTable)
         val dm = DataManager(requireActivity())
         val mm = MonthManager(requireActivity())
         var last = mm.getLast()
@@ -60,11 +67,13 @@ class HomeFragment : Fragment() {
             var styleResId = R.style.budget_center_layout
             var styledTextView = ContextThemeWrapper(requireContext(), styleResId)
             currentPeriodHolder.setTextAppearance(styledTextView, styleResId)
-            currentPeriodHolder.layoutParams = LinearLayout.LayoutParams(
+            currentPeriodHolder.layoutParams = TableRow.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            budgetHolder.addView(currentPeriodHolder)
+            ).apply {
+                span = 4 // Set the number of columns to span
+            }
+            tableLayout.addView(currentPeriodHolder)
         }
         last.close()
         var obj = dm.selectAllByCategory()
@@ -73,6 +82,35 @@ class HomeFragment : Fragment() {
         var totalBalance = 0.0
         var memory = ""
         var flag = false
+        val tableHeadRow = TableRow(requireContext())
+        val headCol1 = TextView(requireContext())
+        val headCol2 = TextView(requireContext())
+        val headCol3 = TextView(requireContext())
+        val headCol4 = TextView(requireContext())
+        val headCols: ArrayList<TextView> = ArrayList()
+        headCols.add(headCol1)
+        headCols.add(headCol2)
+        headCols.add(headCol3)
+        headCols.add(headCol4)
+        headCol1.text = "Budget name"
+        headCol2.text = "Budget amount"
+        headCol3.text = "Budget balance"
+        headCol4.text = "Category"
+        for(headCol in headCols) {
+            headCol.textSize = 18F
+            headCol.typeface = Typeface.DEFAULT_BOLD
+            val tlparams = LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+            )
+            tlparams.setMargins(10, 0, 0, 5)
+            headCol.layoutParams = tlparams
+        }
+        tableHeadRow.addView(headCol1)
+        tableHeadRow.addView(headCol2)
+        tableHeadRow.addView(headCol3)
+        tableHeadRow.addView(headCol4)
+        tableLayout.addView(tableHeadRow)
         while(obj.moveToNext()) {
             if(memory == "" || obj.getString(2).lowercase() != memory) {
                 memory = obj.getString(2).lowercase()
@@ -83,6 +121,7 @@ class HomeFragment : Fragment() {
                 if(possiblePeriod.getLong(2) > currentTime) {
                     totalBudget += obj.getDouble(3)
                     totalBalance += obj.getDouble(4)
+                    /* Deprecated showing a period title to instead have one larger table
                     if(flag) {
                         val categoryHolder = TextView(activity)
                         categoryHolder.text = "Category: ${obj.getString(2)}"
@@ -95,6 +134,33 @@ class HomeFragment : Fragment() {
                         )
                         budgetHolder.addView(categoryHolder)
                     }
+
+                     */
+
+                    // Create a new row
+                    val tableRow = TableRow(requireContext())
+                    val column1 = TextView(requireContext())
+                    val column2 = TextView(requireContext())
+                    val column3 = TextView(requireContext())
+                    val column4 = TextView(requireContext())
+                    column1.text = obj.getString(1)
+                    column2.text = obj.getString(3)
+                    column3.text = obj.getString(4)
+                    column4.text = obj.getString(2)
+                    column1.setBackgroundResource(R.drawable.table_border)
+                    column1.setPadding(10, 10, 10, 10)
+                    column2.setBackgroundResource(R.drawable.table_border)
+                    column2.setPadding(10, 10, 10, 10)
+                    column3.setBackgroundResource(R.drawable.table_border)
+                    column3.setPadding(10, 10, 10, 10)
+                    column4.setBackgroundResource(R.drawable.table_border)
+                    column4.setPadding(10, 10, 10, 10)
+                    tableRow.addView(column1)
+                    tableRow.addView(column2)
+                    tableRow.addView(column3)
+                    tableRow.addView(column4)
+                    tableLayout.addView(tableRow)
+                    /* Deprecated appending TextViews for one larger table
                     val nameHolder = TextView(activity)
                     nameHolder.text = "Budget: ${obj.getString(1)}"
                     var styleResId = R.style.budget_name_layout
@@ -126,6 +192,8 @@ class HomeFragment : Fragment() {
                     budgetHolder.addView(amountHolder)
                     budgetHolder.addView(balanceHolder)
                     flag = false
+
+                     */
                 }
             }
             possiblePeriod.close()

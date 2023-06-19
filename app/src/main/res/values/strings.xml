@@ -17,9 +17,11 @@
     <!-- Settings -->
 
     <!-- About -->
-    <string name="about_blurb">This app is an app.</string>
+    <string name="about_blurb">Jessica Al Fahad, 2023. A basic school project turned side project. The original scope was very limited and not very user-friendly, which are the two main things I wanted to keep working on with this app.</string>
 
     <!-- Manage balance -->
+    <string name="open_balance_container">Modify balance</string>
+    <string name="open_budget_container">Modify budget</string>
     <string name="add_balance_btn">Add to balance</string>
     <string name="remove_balance_btn">Remove from balance</string>
     <string name="add_budget_btn">Add to budget</string>
