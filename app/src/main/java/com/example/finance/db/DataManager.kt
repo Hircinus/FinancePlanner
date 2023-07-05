@@ -1,4 +1,4 @@
-package com.example.finance
+package com.example.finance.db
 
 import android.content.Context
 import android.database.Cursor
@@ -43,6 +43,40 @@ class DataManager(context: Context) {
         private const val TABLE_MONTH = "month"
     }
 
+
+    fun getAllNames(): ArrayList<String> {
+        val c: Cursor = db.rawQuery("SELECT $TABLE_ROW_NAME FROM $TABLE_BUDGET", null)
+        val items = ArrayList<String>()
+        if (c.moveToFirst()) {
+            while (!c.isAfterLast) {
+                items.add(c.getString(c.getColumnIndexOrThrow("$TABLE_ROW_NAME")))
+                c.moveToNext()
+            }
+        }
+        return items
+    }
+    fun getAllNamesWithCategory(): ArrayList<String> {
+        val c: Cursor = db.rawQuery("SELECT * FROM $TABLE_BUDGET", null)
+        val items = ArrayList<String>()
+        if (c.moveToFirst()) {
+            while (!c.isAfterLast) {
+                items.add("${c.getString(1)} (${c.getString(2)})")
+                c.moveToNext()
+            }
+        }
+        return items
+    }
+    fun getAllIds(): ArrayList<Int> {
+        val c: Cursor = db.rawQuery("SELECT $TABLE_ROW_ID FROM $TABLE_BUDGET", null)
+        val items = ArrayList<Int>()
+        if (c.moveToFirst()) {
+            while (!c.isAfterLast) {
+                items.add(c.getInt(c.getColumnIndexOrThrow("$TABLE_ROW_ID")))
+                c.moveToNext()
+            }
+        }
+        return items
+    }
 
     fun insert(name: String, monthlyAmount: Double, category: String, month_id: Int) {
         val query =

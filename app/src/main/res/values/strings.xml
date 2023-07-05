@@ -19,6 +19,9 @@
     <!-- About -->
     <string name="about_blurb">Jessica Al Fahad, 2023. A basic school project turned side project. The original scope was very limited and not very user-friendly, which are the two main things I wanted to keep working on with this app.</string>
 
+    <!-- Transaction page -->
+    <string name="add_transaction_button">Add transaction</string>
+
     <!-- Manage balance -->
     <string name="open_balance_container">Modify balance</string>
     <string name="open_budget_container">Modify budget</string>

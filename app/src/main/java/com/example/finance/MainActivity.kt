@@ -60,6 +60,12 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.fragmentHolder, frag)
             .commit()
     }
+    fun loadTransaction(v: View) {
+        var frag = TransactionFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentHolder, frag)
+            .commit()
+    }
     fun loadManageBudgets(v: View) {
         var frag = ManageFragment()
         supportFragmentManager.beginTransaction()

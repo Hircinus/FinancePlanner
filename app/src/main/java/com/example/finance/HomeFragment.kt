@@ -13,6 +13,8 @@ import android.widget.TableRow
 import android.widget.TableRow.LayoutParams
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.finance.db.DataManager
+import com.example.finance.db.MonthManager
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -103,9 +105,16 @@ class HomeFragment : Fragment() {
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             )
-            tlparams.setMargins(10, 0, 0, 5)
+            tlparams.setMargins(0, 0, 10, 5)
             headCol.layoutParams = tlparams
         }
+        // set different margin for first header column of table
+        val h1params = LayoutParams(
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT
+        )
+        h1params.setMargins(10, 0, 10, 5)
+        headCol1.layoutParams = h1params
         tableHeadRow.addView(headCol1)
         tableHeadRow.addView(headCol2)
         tableHeadRow.addView(headCol3)
@@ -143,10 +152,10 @@ class HomeFragment : Fragment() {
                     val column2 = TextView(requireContext())
                     val column3 = TextView(requireContext())
                     val column4 = TextView(requireContext())
-                    column1.text = obj.getString(1)
-                    column2.text = obj.getString(3)
-                    column3.text = obj.getString(4)
-                    column4.text = obj.getString(2)
+                    column1.text = "${ obj.getString(1) }"
+                    column2.text = "$${ obj.getString(3) }"
+                    column3.text = "$${ obj.getString(4) }"
+                    column4.text = "${ obj.getString(2) }"
                     column1.setBackgroundResource(R.drawable.table_border)
                     column1.setPadding(10, 10, 10, 10)
                     column2.setBackgroundResource(R.drawable.table_border)

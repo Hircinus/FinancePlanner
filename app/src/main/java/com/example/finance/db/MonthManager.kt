@@ -1,4 +1,4 @@
-package com.example.finance
+package com.example.finance.db
 
 import android.content.Context
 import android.database.Cursor

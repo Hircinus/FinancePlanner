@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.example.finance.db.DataManager
+import com.example.finance.db.MonthManager
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -91,8 +93,8 @@ class ManageFragment : Fragment() {
         var items = ArrayList<String>()
         var itemsId = ArrayList<Int>()
         val budgets: Spinner = view.findViewById(R.id.budgetsHolder)
-        items = if (username == true) checkBudgetOptionsByNameWithCategory(dm, mm) else checkBudgetOptionsByName(dm, mm)
-        itemsId = checkBudgetOptionsById(dm, mm)
+        items = if (username == true) dm.getAllNamesWithCategory() else dm.getAllNames()
+        itemsId = dm.getAllIds()
         var adapter: ArrayAdapter<String> = ArrayAdapter<String>(
             requireContext(),
             R.layout.spinner_item, items
@@ -149,7 +151,9 @@ class ManageFragment : Fragment() {
             createBtn.setOnClickListener {
                 var obj = mm.getLast()
                 if(budgetName.text.toString() == "" || budgetAmount.text.toString() == "") {
-                    throwErrorDialog("Cannot create new budget as some fields are empty or invalid.", "Invalid budget properties") {}
+                    throwErrorDialog("Cannot create new budget as some fields are empty or invalid.", "Invalid budget properties") {
+                        createBudget.performClick()
+                    }
                 } else {
                     if(obj.moveToLast() && obj.getDouble(2) > System.currentTimeMillis()) {
                         val monthId = obj.getInt(0)
@@ -163,8 +167,9 @@ class ManageFragment : Fragment() {
                                             dialog, id ->
                                         run {
                                             dm.insert(budgetName.text.toString(), budgetAmount.text.toString().toDouble(), newBudgetCategory.text.toString(), monthId)
-                                            items = if (username == true) checkBudgetOptionsByNameWithCategory(dm, mm) else checkBudgetOptionsByName(dm, mm)
-                                            itemsId = checkBudgetOptionsById(dm, mm)
+                                            Toast.makeText(activity, "Budget \"${budgetName.text.toString()}\" successfully created", Toast.LENGTH_LONG).show();
+                                            items = if (username == true) dm.getAllNamesWithCategory() else dm.getAllNames()
+                                            itemsId = dm.getAllIds()
                                             budgets.adapter = ArrayAdapter<String>(
                                                 requireContext(),
                                                 R.layout.spinner_item, items
@@ -184,12 +189,14 @@ class ManageFragment : Fragment() {
                                 alert.show()
 
                             } else {
-                                throwErrorDialog("Cannot create category ${newBudgetCategory.text.toString()} since it already exists.", "Category already exists") {}
+                                throwErrorDialog("Cannot create category ${newBudgetCategory.text.toString()} since it already exists.", "Category already exists") {
+                                    createBudget.performClick()
+                                }
                             }
                         } else {
                             dm.insert(budgetName.text.toString(), budgetAmount.text.toString().toDouble(), budgetCategory.selectedItem.toString(), obj.getInt(0))
+                            Toast.makeText(activity, "Budget \"${budgetName.text.toString()}\" successfully created", Toast.LENGTH_LONG).show();
                         }
-                        Toast.makeText(activity, "Budget successfully created", Toast.LENGTH_LONG).show();
                     } else {
                         val currentTime = System.currentTimeMillis()
                         val calendar: Calendar = Calendar.getInstance()
@@ -207,8 +214,8 @@ class ManageFragment : Fragment() {
                 }
                 updateStuff.visibility = View.VISIBLE
                 createStuff.visibility = View.GONE
-                items = if (username == true) checkBudgetOptionsByNameWithCategory(dm, mm) else checkBudgetOptionsByName(dm, mm)
-                itemsId = checkBudgetOptionsById(dm, mm)
+                items = if (username == true) dm.getAllNamesWithCategory() else dm.getAllNames()
+                itemsId = dm.getAllIds()
                 budgets.adapter = ArrayAdapter<String>(
                     requireContext(),
                     R.layout.spinner_item, items
@@ -217,11 +224,11 @@ class ManageFragment : Fragment() {
             }
         }
         deleteBudget.setOnClickListener {
-            showConfirmationDialog("Are you sure you want to delete this budget?", "Confirm budget deletion", "Delete it", "Show it mercy", dm) {
-                dm.delete(budgets.selectedItem.toString())
+            showConfirmationDialog("Are you sure you want to delete the budget \"${budgets.selectedItem}\"?", "Confirm budget deletion", "Delete it", "Show it mercy", dm) {
+                dm.delete(itemsId[budgets.selectedItemId.toInt()])
                 Toast.makeText(activity, "Budget successfully deleted", Toast.LENGTH_LONG).show();
-                items = if (username == true) checkBudgetOptionsByNameWithCategory(dm, mm) else checkBudgetOptionsByName(dm, mm)
-                itemsId = checkBudgetOptionsById(dm, mm)
+                items = if (username == true) dm.getAllNamesWithCategory() else dm.getAllNames()
+                itemsId = dm.getAllIds()
                 budgets.adapter = ArrayAdapter<String>(
                     requireContext(),
                     R.layout.spinner_item, items
@@ -232,7 +239,7 @@ class ManageFragment : Fragment() {
             val amountEdit = view.findViewById<EditText>(R.id.amountBudget)
             var amount: Double = 0.0
             if(amountEdit.text.toString() == "") {
-                throwErrorDialog("Please enter a number to remove from your budget.",
+                throwErrorDialog("Please enter the desired amount from the budget total of \"${budgets.selectedItem}\".",
                     "No number entered"
                 ) { amountEdit.setText("", TextView.BufferType.EDITABLE) }
             }
@@ -241,7 +248,7 @@ class ManageFragment : Fragment() {
                 val obj = dm.searchID(itemsId[budgets.selectedItemId.toInt()])
                 if(obj.moveToLast()) {
                     if(amount > obj.getDouble(3)) {
-                        throwErrorDialog("You can't remove that from your budget since your budget would become negative.",
+                        throwErrorDialog("You can't remove that amount \"${budgets.selectedItem}\" would become negative.",
                             "Budget adjustment invalid"
                         ) { amountEdit.setText("", TextView.BufferType.EDITABLE) }
                     } else {
@@ -249,8 +256,8 @@ class ManageFragment : Fragment() {
                         Toast.makeText(activity, "$amount removed from the balance of ${obj.getString(1)}", Toast.LENGTH_LONG).show();
                     }
                 }
-                items = if (username == true) checkBudgetOptionsByNameWithCategory(dm, mm) else checkBudgetOptionsByName(dm, mm)
-                itemsId = checkBudgetOptionsById(dm, mm)
+                items = if (username == true) dm.getAllNamesWithCategory() else dm.getAllNames()
+                itemsId = dm.getAllIds()
                 budgets.adapter = ArrayAdapter<String>(
                     requireContext(),
                     R.layout.spinner_item, items
@@ -338,6 +345,8 @@ class ManageFragment : Fragment() {
         return false
     }
 
+    /*
+    Implemented in DB methods; these functions no longer needed
     private fun checkBudgetOptionsByNameWithCategory(dm: DataManager, mm: MonthManager): ArrayList<String> {
         val budgetOptions = dm.selectAll()
         val lastMonth = mm.getLast()
@@ -387,6 +396,8 @@ class ManageFragment : Fragment() {
         lastMonth.close()
         return items
     }
+    
+     */
     private fun checkCategoryOptions(dm: DataManager, mm: MonthManager): ArrayList<String> {
         val budgetOptions = dm.selectAll()
         var mem = ""

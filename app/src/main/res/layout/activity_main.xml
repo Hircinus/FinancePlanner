@@ -23,6 +23,14 @@
             android:text="" />
         <Button
             style="@style/menuBtn"
+            android:onClick="loadTransaction"
+            app:icon="@drawable/plus"
+            app:iconGravity="textEnd"
+            app:iconPadding="10dp"
+            app:iconTint="#efefef"
+            android:text="" />
+        <Button
+            style="@style/menuBtn"
             android:onClick="loadManageBudgets"
             app:icon="@drawable/search"
             app:iconGravity="textEnd"
